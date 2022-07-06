@@ -15,7 +15,7 @@ async def on_startup(dp):
         db.create_table_users()
         print("всё хорошо")
     except Exception as err:
-        print("что-то пошло не так, но я поймал ошибку и обработал её")
+        print("что-то пошло не так, но я поймал ошибку и обработал её.")
         print(err)
     #db.delete_users()
 
