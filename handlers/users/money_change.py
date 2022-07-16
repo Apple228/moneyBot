@@ -8,9 +8,17 @@ from loader import dp, dm
 @dp.message_handler()
 async def money_change(message: types.Message, state: FSMContext):
     if message.text.lower() == "еда":
-        await message.answer('Вы выбрали еду')
-    if message.text.lower() == "транспорт":
-        await message.answer('Вы выбрали транспорт')
+        await message.answer('Воду значит не пьете.')
+        await state.update_data(category='еда')
+    elif message.text.lower() == "транспорт":
+        await message.answer('Не забывайте ходить пешком.')
+        await state.update_data(category='транспорт')
+    elif message.text.lower() == 'казино':
+        await message.answer('Вы принимаете плохие финансовые решения.')
+        await state.update_data(category='казино')
+    else:
+        await message.answer('Нет такой категории')
+        await state.update_data(category='нет такой категории')
 
     await message.answer('Введите потраченную сумму')
 
@@ -18,5 +26,12 @@ async def money_change(message: types.Message, state: FSMContext):
 
 @dp.message_handler(state="Ввод суммы")
 async def money_change_dm(message: types.Message, state: FSMContext):
-    await dm.add_money_change(message.text, message.from_user.id)
-    await message.answer('Данные обновлены')
+    try:
+        summ = int(message.text)
+        data = await state.get_data()
+        dm.add_money_change(message.from_user.id, data.get('category'), summ)
+        await message.answer('Данные обновлены')
+        await state.reset_state()
+    except:
+        await message.answer("Было введено не целое число. Попробуйте еще раз.")
+        await state.set_state("Ввод суммы")

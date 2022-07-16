@@ -31,17 +31,28 @@ class MoneyDatabase:
     def create_table_money(self):
         sql = """
         CREATE TABLE Money(
-        id int NOT NULL,
-        Name varchar(255) NOT NULL,
-        sum int NOT NULL,
-        PRIMARY KEY(id)
+        tg_id int NOT NULL,
+        category varchar(255) NOT NULL,
+        summ int NOT NULL
         );
         """
         self.execute(sql, commit=True)
 
-    def add_money_change(self, sum: int, id: int):
+    def add_money_change(self, tg_id: int, category: str, summ: int):
         sql = f"""
-        INSERT INTO Money(id, sum) VALUES(?,?)
+        INSERT INTO Money(tg_id, category, summ) VALUES(?,?,?)
         """
 
-        self.execute(sql, parameters=(id, sum), commit=True)
+        self.execute(sql, parameters=(tg_id, category, summ), commit=True)
+
+    @staticmethod
+    def format_args(sql, parameters: dict):
+        sql += " AND ".join([
+            f"{item} = ?" for item in parameters
+        ])
+        return sql, tuple(parameters.values())
+
+    def select_stats(self, **kwargs):
+        sql = "SELECT * FROM Money WHERE "
+        sql, parameters = self.format_args(sql, kwargs)
+        return self.execute(sql, parameters=parameters, fetchone=True)
