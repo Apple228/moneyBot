@@ -2,7 +2,7 @@ from aiogram import types
 from aiogram.dispatcher.filters import Command
 from aiogram.types import ReplyKeyboardRemove
 
-from keyboards.default import contact
+from keyboards.default import contact, category
 from loader import dp, db
 
 
@@ -17,5 +17,5 @@ async def get_contact(message: types.Message):
     contact = message.contact
     await message.answer(f"Спасибо за ваш номер, {contact.full_name}.\n"
                          f"Ваш номер: {contact.phone_number}.\n"
-                         f"Ожидайте", reply_markup=ReplyKeyboardRemove())
+                         f"Ожидайте", reply_markup=category.category_keyboard)
     db.update_user_number(contact.phone_number,contact.user_id)

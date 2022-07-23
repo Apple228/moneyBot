@@ -12,15 +12,22 @@ async def money_change(message: types.Message, state: FSMContext):
     if message.text.lower() == "еда":
         await message.answer('Воду значит не пьете.')
         await state.update_data(category='еда')
-    elif message.text.lower() == "транспорт":
+
+    elif message.text.lower() == "транспорт🚗" or message.text.lower() == "транспорт":
         await message.answer('Не забывайте ходить пешком.')
-        await state.update_data(category='транспорт')
+        await state.update_data(category='транспорт🚗')
+
     elif message.text.lower() == 'казино':
         await message.answer('Вы принимаете плохие финансовые решения.')
         await state.update_data(category='казино')
+
+    elif message.text.lower() == 'продукты':
+        await message.answer('Зашел в магазин за молоком, вышел со всем кроме молока.')
+        await state.update_data(category='продукты')
+
     else:
-        await message.answer('Нет такой категории')
-        await state.update_data(category='нет такой категории')
+        await message.answer('Нет такой категории, поэтому сейчас добавим.')
+        await state.update_data(category=message.text)
 
     await message.answer('Введите потраченную сумму')
 
