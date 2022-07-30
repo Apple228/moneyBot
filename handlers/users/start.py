@@ -28,7 +28,7 @@ async def bot_start_deeplink(message: types.Message):
 # @dp.message_handler(CommandStart(), IsPrivate())
 # async def bot_start(message: types.Message):
 #     await message.answer(f'Привет {message.from_user.full_name} {message.from_user.id}')
-#     await message.answer('Хотите ли вы получать ежедневное напоминание с количеством дней до конца лета?', reply_markup=menu)
+#     await message.answer('Хотите ли вы получать ежедневное напоминание с количеством дней до конца лета?')
 #     await Test.Q1.set()
 
 @dp.message_handler(CommandStart())
