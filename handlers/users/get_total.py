@@ -10,13 +10,22 @@ async def total_output(message: types.Message):
     msg = ''
     sum_food = 0
     sum_transport = 0
+    msg_dict = {}
+
     for entry in total_list:
-        #msg += f"Категория: {entry[1]}\n" \
-        #       f"Сумма: {entry[2]}\n"
-        if entry[1] == 'еда':
-            sum_food += entry[2]
-        elif entry[1] == 'транспорт':
-            sum_transport += entry[2]
-    msg = f"Еда🍔: {sum_food}\n" \
-           f"Транспорт🚗: {sum_transport}\n"
+        category = entry[1]
+        value = entry[2]
+        if category in msg_dict:
+            msg_dict[category] += value
+        else:
+            msg_dict.update({category: value})
+
+    total = 0
+
+    for key, value in msg_dict.items():
+        msg += f"{key}: {value}\n"
+        total += value
+
+    msg += f"Итог: {total}"
+
     await message.answer(msg)
