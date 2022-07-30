@@ -4,6 +4,7 @@ from aiogram import types
 from aiogram.dispatcher import FSMContext
 from aiogram.types import message
 
+from keyboards.default.cancel import cancel_keyboard
 from loader import dp, dm
 
 
@@ -26,26 +27,26 @@ async def money_change(message: types.Message, state: FSMContext):
         await state.update_data(category='продукты')
 
     elif message.text.lower() == 'подарки мне🎁':
-        await message.answer('.')
+        await message.answer('Не тратьте все сразу, дождитесь распродажи в стиме.')
         await state.update_data(category='подарки мне🎁')
 
     elif message.text.lower() == 'подарки другим🎁':
-        await message.answer('.')
+        await message.answer('Ну хотя бы есть кому дарить, и то хорошо.')
         await state.update_data(category='подарки другим🎁')
 
     elif message.text.lower() == 'коммуналка💡':
-        await message.answer('.')
+        await message.answer('Экономьте электроэнергию (воду тоже)')
         await state.update_data(category='коммуналка💡')
 
     elif message.text.lower() == 'хобби🗿':
-        await message.answer('.')
+        await message.answer('🗿')
         await state.update_data(category='хобби🗿')
 
     else:
         await message.answer('Нет такой категории, поэтому сейчас добавим.')
         await state.update_data(category=message.text)
 
-    await message.answer('Введите потраченную сумму')
+    await message.answer('Введите потраченную сумму',reply_markup=cancel_keyboard)
 
     await state.set_state("Ввод суммы")
 
