@@ -2,12 +2,16 @@ import os
 
 from dotenv import load_dotenv
 
+from environs import Env
+
+env = Env()
+env.read_env()
+
 load_dotenv()
 
 BOT_TOKEN = str(os.getenv("BOT_TOKEN"))
-admins = [
-    1875756936
-]
+admins = env.list("ADMINS")
+
 
 ip = os.getenv("ip")
 
