@@ -1,59 +1,52 @@
-import sqlite3
+from typing import Union
+import asyncpg
+from asyncpg import Pool, Connection
 
-from utils.db_api.sqlite import logger
+from data import config
+
 
 class MoneyDatabase:
-    def __init__(self, path_to_db="money.db"):
-        self.path_to_db = path_to_db
+    def __init__(self):
+        self.pool: Union[Pool, None] = None
 
-    @property
-    def connection(self):
-        return sqlite3.connect(self.path_to_db)
+    async def connect(self):
+        self.pool = await asyncpg.create_pool(
+            user=config.DB_USER,
+            password=config.DB_PASS,
+            host=config.DB_HOST,
+            database=config.DB_NAME
+        )
 
-    def execute(self, sql: str, parameters: tuple=None, fetchone=False, fetchall=False, commit=False):
-        if not parameters:
-            parameters = ()
-        connection = self.connection
-        connection.set_trace_callback(logger)
-        cursor = connection.cursor()
-        data = None
-        cursor.execute(sql, parameters)
+    async def execute(self, command, *args,
+        fetch: bool=True,
+        fetchval: bool=False,
+        fetchrow: bool=False,
+        execute: bool=False
+        ):
+        async with self.pool.acquire() as connection:
+            connection: Connection
 
-        if commit:
-            connection.commit()
-        if fetchall:
-            data = cursor.fetchall()
-        if fetchone:
-            data = cursor.fetchone()
-        connection.close()
-        return data
-
-    def create_table_money(self):
+            async with connection.transaction():
+                if fetch:
+                    result = await connection.fetch(command, *args)
+                elif fetchval:
+                    result = await connection.fetchval(command, *args)
+                elif fetchrow:
+                    result = await connection.fetchrow(command, *args)
+                elif execute:
+                    result = await connection.execute(command, *args)
+            return result
+    async def create_table_money(self):
         sql = """
-        CREATE TABLE Money(
-        tg_id int NOT NULL,
-        category varchar(255) NOT NULL,
-        summ int NOT NULL,
-        datetime varchar(255) NOT NULL
-        );
-        """
-        self.execute(sql, commit=True)
-
-    def add_money_change(self, tg_id: int, category: str, summ: int, datetime: str):
-        sql = f"""
-        INSERT INTO Money(tg_id, category, summ, datetime) VALUES(?,?,?,?)
+        CREATE TABLE IF NOT EXISTS Accounting (
+        id SERIAL PRIMARY KEY,
+        telegram_id BIGINT NOT NULL UNIQUE,
+        category VARCHAR(55),
+        summ INT NOT NULL,
+        datetime VARCHAR(25),
+        )
         """
 
-        self.execute(sql, parameters=(tg_id, category, summ, datetime), commit=True)
-
-    @staticmethod
-    def format_args(sql, parameters: dict):
-        sql += " AND ".join([
-            f"{item} = ?" for item in parameters
-        ])
-        return sql, tuple(parameters.values())
-
-    def select_stats(self, **kwargs):
-        sql = "SELECT * FROM Money WHERE "
-        sql, parameters = self.format_args(sql, kwargs)
-        return self.execute(sql, parameters=parameters, fetchall=True)
+    async def add_money_change(self, tg_id, category, summ, datetime):
+        sql = "INSERT INTO Accounting (tg_id, category, summ, datetime) VALUES($1,$2,$3,$4);"
+        return await self.execute(sql, tg_id, category, summ, datetime, execute=True)

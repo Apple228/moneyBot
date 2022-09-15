@@ -9,24 +9,26 @@ async def on_startup(dp):
     middlewares.setup(dp)
 
     from utils.notify_admins import on_startup_notify
+    await db.connect()
+    await dm.connect()
 
     try:
         print("пытаюсь создать таблицу")
-        db.create_table_users()
-        print("всё хорошо")
+        await db.create_table_users()
+        print("всё норм")
     except Exception as err:
         print("что-то пошло не так, но я поймал ошибку и обработал её.")
         print(err)
     #db.delete_users()
 
     try:
-        dm.create_table_money()
+        await dm.create_table_money()
         print('таблица создана')
     except Exception as err:
         print('случилась непредвиденная ошибка, вот она:')
         print(err)
 
-    print(db.select_all_users())
+    # print(await db.select_all_users())
     await on_startup_notify(dp)
     await set_default_commands(dp)
 
