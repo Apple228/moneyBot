@@ -40,13 +40,18 @@ class MoneyDatabase:
         sql = """
         CREATE TABLE IF NOT EXISTS Accounting (
         id SERIAL PRIMARY KEY,
-        telegram_id BIGINT NOT NULL UNIQUE,
+        telegram_id BIGINT NOT NULL,
         category VARCHAR(55),
         summ INT NOT NULL,
-        datetime VARCHAR(25),
-        )
+        datetime VARCHAR(25)
+        );
         """
+        await self.execute(sql, execute=True)
 
-    async def add_money_change(self, tg_id, category, summ, datetime):
-        sql = "INSERT INTO Accounting (tg_id, category, summ, datetime) VALUES($1,$2,$3,$4);"
-        return await self.execute(sql, tg_id, category, summ, datetime, execute=True)
+    async def add_money_change(self, telegram_id, category, summ, datetime):
+        sql = "INSERT INTO Accounting (telegram_id, category, summ, datetime) VALUES($1,$2,$3,$4);"
+        return await self.execute(sql, telegram_id, category, summ, datetime, execute=True)
+
+    async def history(self, telegram_id):
+        sql = "SELECT category, summ, datetime FROM Accounting WHERE telegram_id=$1;"
+        return await self.execute(sql, telegram_id, fetch=True)

@@ -17,7 +17,9 @@ category_keyboard = ReplyKeyboardMarkup(resize_keyboard=True,
                                                 KeyboardButton(text="подарки другим🎁")
                                             ],
                                             [
-                                                KeyboardButton(text="зарплата💰")
+                                                KeyboardButton(text="зарплата💰"),
+
+                                                KeyboardButton(text="история⏰")
                                             ],
                                         ]
 
