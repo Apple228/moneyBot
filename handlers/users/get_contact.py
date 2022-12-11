@@ -18,4 +18,4 @@ async def get_contact(message: types.Message):
     await message.answer(f"Спасибо за ваш номер, {contact.full_name}.\n"
                          f"Ваш номер: {contact.phone_number}.\n"
                          f"Ожидайте", reply_markup=category.category_keyboard)
-    db.update_user_number(contact.phone_number,contact.user_id)
+    await db.update_user_number(contact.phone_number,contact.user_id)

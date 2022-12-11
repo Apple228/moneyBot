@@ -1,5 +1,6 @@
 import sqlite3
 
+import asyncpg.exceptions
 from aiogram import types
 from aiogram.dispatcher import FSMContext
 from aiogram.dispatcher.filters import CommandStart
@@ -35,10 +36,11 @@ async def bot_start_deeplink(message: types.Message):
 async def bot_start(message: types.Message):
     name = message.from_user.full_name
     try:
-        db.add_user(id=message.from_user.id,name=name)
-    except sqlite3.IntegrityError as err:
-        print(err)
-    count = db.count_users()[0]
+        await db.add_user(full_name=name,username=message.from_user.username,telegram_id=message.from_user.id)
+    except asyncpg.exceptions.UniqueViolationError:
+        await db.select_user(telegram_id = message.from_user.id)
+    count = await db.count_users()
+    # count = None
     await message.answer(
         "\n".join(
             [

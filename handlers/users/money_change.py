@@ -5,6 +5,7 @@ from aiogram.dispatcher import FSMContext
 from aiogram.types import message
 
 from keyboards.default.cancel import cancel_keyboard
+from keyboards.default.category import category_keyboard
 from loader import dp, dm
 
 
@@ -57,8 +58,8 @@ async def money_change_dm(message: types.Message, state: FSMContext):
         data = await state.get_data()
         current_date = datetime.datetime.now()
         current_date_str = current_date.strftime('%H:%M:%S %d.%m.%y')
-        dm.add_money_change(message.from_user.id, data.get('category'), summ, current_date_str)
-        await message.answer('Данные обновлены')
+        await dm.add_money_change(message.from_user.id, data.get('category'), summ, current_date_str)
+        await message.answer('Данные обновлены',reply_markup=category_keyboard)
         await state.reset_state()
     except ValueError:
         await message.answer("Было введено не целое число. Попробуйте еще раз.")
