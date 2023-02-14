@@ -12,18 +12,18 @@ from filters import IsPrivate
 from keyboards.default import contact
 from loader import dp, db
 
-from data.config import users
+
 
 
 @dp.message_handler(CommandStart(deep_link="connect_user"))
 async def connect_user(message:types.Message):
-    users[message.from_user.id] = message.from_user.full_name
+    # users[message.from_user.id] = message.from_user.full_name
     await message.answer("Вы подключены")
 
 @dp.message_handler(CommandStart(deep_link=compile(r"\d\d\d")))
 async def bot_start_deeplink(message: types.Message):
     await message.answer(f'Привет, ты перешел по ссылке')
-    users[message.from_user.id] = message.from_user.full_name
+    # users[message.from_user.id] = message.from_user.full_name
 
 
 # @dp.message_handler(CommandStart(), IsPrivate())

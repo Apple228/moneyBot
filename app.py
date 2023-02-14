@@ -5,12 +5,12 @@ from utils.set_bot_commands import set_default_commands
 async def on_startup(dp):
     import filters
     import middlewares
-    filters.setup(dp)
-    middlewares.setup(dp)
+    # filters.setup(dp)
+    # middlewares.setup(dp)
 
     from utils.notify_admins import on_startup_notify
-    await db.connect()
-    await dm.connect()
+    # await db.connect()
+    # await dm.connect()
 
     try:
         print("пытаюсь создать таблицу")

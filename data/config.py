@@ -12,13 +12,10 @@ admins = env.list("ADMINS")
 
 ip = os.getenv("ip")
 
-DB_USER = env.str("DB_USER")
-
-DB_NAME = env.str("DB_NAME")
-
-DB_HOST = env.str("DB_HOST")
-
-DB_PASS = env.str("DB_PASS")
+# DB_USER = env.str("DB_USER")
+# DB_NAME = env.str("DB_NAME")
+# DB_HOST = env.str("DB_HOST")
+# DB_PASS = env.str("DB_PASS")
 
 aiogram_redis = {
     'host': ip,
@@ -27,12 +24,4 @@ aiogram_redis = {
 redis = {
     'address': (ip, 6379),
     'encoding': 'utf8'
-}
-
-users = {}
-
-memes = {
-    1: 'https://i.imgflip.com/2r3rxh.jpg',
-    2: 'https://i.kym-cdn.com/photos/images/facebook/001/713/926/969.png',
-    3: 'https://media.makeameme.org/created/oh-boy-i-acd5acd1b4.jpg',
 }
